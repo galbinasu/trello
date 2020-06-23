@@ -1,11 +1,13 @@
 import json
 import re
 
-if __name__ == "__main__":
-
+def trello():
     with open('Trello Central Board JSON.json', 'r') as myfile:
         data=myfile.read()
-    obj = json.loads(data)
+    if data == "":
+        print("Empty JSON")
+    else:
+        obj = json.loads(data)
 
     # # Add points
     # for card in obj["cards"]:
@@ -26,6 +28,7 @@ if __name__ == "__main__":
     for card in obj["cards"]:
         card["!points"] = "0"
         card["!dateCreation"] = "0"
+        card["name"] = card["name"].encode('ascii',errors='ignore').decode()
         for value in re.findall('\(([^)]+)', card["name"]):
             if value.isdigit():
                 card["!points"] = value
@@ -39,8 +42,9 @@ if __name__ == "__main__":
                 
 
     for list in obj["lists"]:
-        print "---"
-        print list["name"]
+        print("---")
+        list["name"] = list["name"].encode('ascii',errors='ignore').decode()
+        print(list["name"])
         points = 0
         cards = []
         for card in obj["cards"]:
@@ -49,8 +53,13 @@ if __name__ == "__main__":
                 cards.append({"id": card["id"], "name": card["name"], "!points": card["!points"], "!dateCreation":card["!dateCreation"]})
         sorted_cards = sorted(cards, key=lambda k: k['!dateCreation'])
         for x in sorted_cards:
-            print x["name"] + " :: " + x["!points"] + " :: " + x["!dateCreation"]
-        print "TOTAL points for " + list["name"] + ":: " + str(points)
+            print(x["id"])
+            print(x["name"] + " :: " + x["!points"] + " :: " + x["!dateCreation"])
+        print("TOTAL points for " + list["name"] + ":: " + str(points))
 
     # with open('file.json', 'w') as file:
     #     file.write(json.dumps(obj))
+
+
+if __name__ == "__main__":
+    trello()
