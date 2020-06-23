@@ -42,20 +42,28 @@ def trello():
                 
 
     for list in obj["lists"]:
-        print("---")
+        filter = ["90 Day Priorities", "Product Backlog", "SPRINT GOALS", "7/4 sprint planning -59 points", "Code Review", "Testing", "items done in sprint ending 24/03- 96"]
+        if list["name"] in filter :
+            continue
         list["name"] = list["name"].encode('ascii',errors='ignore').decode()
+        print("---")
         print(list["name"])
+        count = 0
         points = 0
         cards = []
         for card in obj["cards"]:
             if list["id"] == card["idList"]:
+                count = count + 1
                 points = points + int(card["!points"])
                 cards.append({"id": card["id"], "name": card["name"], "!points": card["!points"], "!dateCreation":card["!dateCreation"]})
         sorted_cards = sorted(cards, key=lambda k: k['!dateCreation'])
         for x in sorted_cards:
             print(x["id"])
             print(x["name"] + " :: " + x["!points"] + " :: " + x["!dateCreation"])
+
+        print("TOTAL cards :: " + str(count))
         print("TOTAL points for " + list["name"] + ":: " + str(points))
+        
 
     # with open('file.json', 'w') as file:
     #     file.write(json.dumps(obj))
